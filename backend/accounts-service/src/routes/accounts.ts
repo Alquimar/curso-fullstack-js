@@ -1,9 +1,10 @@
 import { Router, Request, Response } from 'express';
+import Joi from 'joi';
 import accountsController from '../controllers/accounts'
-import { accountSchema } from '../models/account';
+import { accountSchema, loginSchema } from '../models/account';
 
-function validateAccount(req: Request, res: Response, next: any) {
-    const { error } = accountSchema.validate(req.body);
+function validateSchema(schema: Joi.ObjectSchema<any>, req: Request, res: Response, next: any) {
+    const { error } = schema.validate(req.body);
     if (error == null) return next();
 
     const { details } = error;
@@ -13,10 +14,21 @@ function validateAccount(req: Request, res: Response, next: any) {
     res.status(422).end();
 }
 
+function validateAccount(req: Request, res: Response, next: any) {
+    return validateSchema(accountSchema, req, res, next);
+}
+
+function validateLogin(req: Request, res: Response, next: any) {
+    return validateSchema(loginSchema, req, res, next);
+}
+
 const router = Router();
 
 router.get('/accounts/', accountsController.getAccounts);
 router.get('/accounts/:id', accountsController.getAccount);
+router.patch('/accounts/:id', validateAccount, accountsController.setAccount);
 router.post('/accounts/', validateAccount, accountsController.addAccount);
+router.post('/accounts/login', validateLogin, accountsController.loginAccount);
+router.post('/accounts/logout', accountsController.logoutAccount);
 
 export default router;
