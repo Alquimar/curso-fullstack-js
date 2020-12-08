@@ -94,7 +94,7 @@ describe('Testando rotas do accounts', () => {
 
     it('GET /accounts/:id - Deve retornar statusCode 404', async () => {
         const resultado = await request(app)
-            .get('/accounts/2');
+            .get('/accounts/-1');
         
         expect(resultado.status).toEqual(404);
     });
