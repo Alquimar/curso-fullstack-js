@@ -10,7 +10,7 @@ function validateSchema(schema: Joi.ObjectSchema<any>, req: Request, res: Respon
     const { details } = error;
     const message = details.map(item => item.message).join(',');
 
-    console.log(message);
+    console.log(`validateSchema: ${message}`);
     res.status(422).end();
 }
 
