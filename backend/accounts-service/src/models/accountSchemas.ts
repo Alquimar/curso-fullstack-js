@@ -24,6 +24,7 @@ const accountSchema = Joi.object({
         domain: Joi.string()
                 .min(5)
                 .max(150)
+                .required()
 });
 
 const accountUpdateSchema = Joi.object({
