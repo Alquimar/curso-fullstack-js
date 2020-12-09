@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { IAccount } from '../models/account';
-import repository from '../models/accountModel';
+import repository from '../models/accountRepository';
 import auth from '../auth';
 
 async function getAccounts(req: Request, res: Response, next: any) {
