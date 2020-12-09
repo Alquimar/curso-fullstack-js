@@ -50,6 +50,7 @@ async function setAccount(req: Request, res: Response, next: any) {
         if (!accountId) throw new Error('ID is invalid format.');
 
         const accountParams = req.body as IAccount;
+        accountParams.password = auth.hashPassword(accountParams.password);
         const updatedAccount = await repository.set(accountId, accountParams);
         updatedAccount.password = '';
         res.status(200).json(updatedAccount);
