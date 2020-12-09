@@ -1,4 +1,5 @@
 node_modules
 dist
 .env
-keys/private.key
+coverage
+keys/*

@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node -r dotenv/config ./dist/server",
-    "compile": "tsc && node -r dotenv/config ./dist/server",
+    "start": "tsc ts-node -r dotenv/config -r tsconfig-paths/register ./dist/accounts-service/src/server",
+    "compile": "tsc && ts-node -r dotenv/config -r tsconfig-paths/register ./dist/accounts-service/src/server",
     "dev": "nodemon -e ts,json --ignore dist --exec \"npm run compile\"",
     "test": "jest"
   },
@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/joi": "^14.3.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "dotenv-safe": "^8.2.0",
@@ -25,9 +24,12 @@
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0"
   },
   "devDependencies": {
+    "@types/joi": "^14.3.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.9",
     "@types/jest": "^26.0.17",
