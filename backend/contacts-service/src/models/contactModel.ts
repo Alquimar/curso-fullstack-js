@@ -23,8 +23,7 @@ export default database.define<IContactModel>('contact', {
     },
     email: {
         type: Sequelize.STRING(150),
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     phone: {
         type: Sequelize.STRING(11),
