@@ -8,6 +8,8 @@ import {
     useRouteMatch
 } from 'react-router-dom';
 
+import SignIn from '../src/pages/public/SignIn';
+
 function Home() {
     return (
         <div>
@@ -52,14 +54,6 @@ function Contact() {
     return(
         <div>
             <h3>Contato: {contactId}</h3>
-        </div>
-    )
-}
-
-function Signin() {
-    return (
-        <div>
-            <h2>Login</h2>
         </div>
     )
 }
@@ -142,7 +136,7 @@ export default function Routes() {
                         <Messages />
                     </Route>
                     <Route path="/signin">
-                        <Signin />
+                        <SignIn />
                     </Route>
                     <Route path="/signup">
                         <Signup />
