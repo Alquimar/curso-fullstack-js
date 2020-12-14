@@ -3,6 +3,7 @@ import app from './../src/app';
 import accountsApp from '../../accounts-service/src/app';
 import { IContact } from '../src/models/contact';
 import repository from '../src/models/contactRepository';
+import { send } from 'process';
 
 const testEmail = 'jest@accounts.com';
 const testEmail2 = 'jest2@accounts.com';
@@ -46,7 +47,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
     const removeResult = await repository.removeByEmail(testEmail, testAccountId);
-    console.log(`removeResult: ${removeResult}`);
+    const removeResult2 = await repository.removeByEmail(testEmail2, testAccountId);
+    console.log(`removeResult: ${removeResult}:${removeResult2}`);
 
     const deleteResponse = await request(accountsApp)
         .delete('/accounts/' + testAccountId)
@@ -59,7 +61,7 @@ afterAll(async () => {
     console.log(`logoutResponse: ${logoutResponse.status}`);
 });
 
-describe('Testando rotas do accounts', () => {
+describe('Testando rotas do contacts', () => {
     it('GET /contacts/ - Deve retornar statusCode 200', async () => {
         const resultado = await request(app)
             .get('/contacts/')
@@ -103,8 +105,66 @@ describe('Testando rotas do accounts', () => {
 
     it('GET /contacts/:id - Deve retornar statusCode 401', async () => {
         const resultado = await request(app)
-        .get('/contacts/' + testContactId);
+            .get('/contacts/' + testContactId);
 
         expect(resultado.status).toEqual(401);
+    });
+
+    it('POST /contacts/ - Deve retornar statusCode 201', async () => {
+        const testContact = {
+            name: 'Jest2',
+            email: testEmail2,
+            phone: '63984743384'
+        } as IContact;
+
+        const resultado = await request(app)
+            .post('/contacts/')
+            .set('x-access-token', jwt)
+            .send(testContact);
+
+        expect(resultado.status).toEqual(201);
+        expect(resultado.body.id).toBeTruthy();
+    });
+
+    it('POST /contacts/ - Deve retornar statusCode 422', async () => {
+        const payload = {
+            street: 'Jest2'
+        };
+
+        const resultado = await request(app)
+            .post('/contacts/')
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(422);
+    });
+
+    it('POST /contacts/ - Deve retornar statusCode 401', async () => {
+        const payload = {
+            name: 'Jest2',
+            email: testEmail2,
+            phone: '63984743384'
+        } as IContact;
+
+        const resultado = await request(app)
+            .post('/contacts/')
+            .send(payload);
+
+        expect(resultado.status).toEqual(401);
+    });
+
+    it('POST /contacts/ - Deve retornar statusCode 400', async () => {
+        const payload = {
+            name: 'Jest3',
+            email: testEmail,
+            phone: '63984743384'
+        } as IContact;
+
+        const resultado = await request(app)
+            .post('/contacts/')
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(400);
     });
 });

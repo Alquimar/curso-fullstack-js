@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import repository from '../models/contactRepository';
 import controllerCommons from 'ms-commons/api/controllers/controller';
 import { Token } from 'ms-commons/api/auth';
+import { IContact } from 'src/models/contact';
 
 async function getContacts(req: Request, res: Response, next: any) {
     try {
@@ -30,4 +31,16 @@ async function getContact(req: Request, res: Response, next: any) {
     }
 }
 
-export default { getContacts, getContact };
+async function addContact(req: Request, res: Response, next: any) {
+    try {
+        const token = controllerCommons.getToken(res) as Token;
+        const contact = req.body as IContact;
+        const result = await repository.add(contact, token.accountId);
+        res.status(201).json(result);
+    } catch (error) {
+        console.log(`addContact: ${error}`);
+        res.status(400).end();
+    }
+}
+
+export default { getContacts, getContact, addContact };
