@@ -39,7 +39,7 @@ class SignIn extends React.Component {
                                 </Form.Group>
                                 <Button block variant="secondary" type="submit">
                                     Fazer login
-                            </Button>
+                                </Button>
                             </Form>
                         </BoxForm>
                         <BoxContent>
