@@ -167,4 +167,69 @@ describe('Testando rotas do contacts', () => {
 
         expect(resultado.status).toEqual(400);
     });
+
+    it('PATCH /contacts/:id - Deve retornar statusCode 200', async () => {
+        const payload = {
+            name: 'Helena',
+        };
+
+        const resultado = await request(app)
+            .patch('/contacts/' + testContactId)
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(200);
+        expect(resultado.body.name).toEqual('Helena');
+    });
+
+    it('PATCH /contacts/:id - Deve retornar statusCode 401', async () => {
+        const payload = {
+            name: 'Helena',
+        };
+
+        const resultado = await request(app)
+            .patch('/contacts/' + testContactId)
+            .send(payload);
+
+        expect(resultado.status).toEqual(401);
+    });
+
+    it('PATCH /contacts/:id - Deve retornar statusCode 422', async () => {
+        const payload = {
+            street: 'Helena',
+        };
+
+        const resultado = await request(app)
+            .patch('/contacts/' + testContactId)
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(422);
+    });
+
+    it('PATCH /contacts/:id - Deve retornar statusCode 404', async () => {
+        const payload = {
+            name: 'Helena',
+        };
+
+        const resultado = await request(app)
+            .patch('/contacts/-1')
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(404);
+    });
+
+    it('PATCH /contacts/:id - Deve retornar statusCode 400', async () => {
+        const payload = {
+            name: 'Helena',
+        };
+
+        const resultado = await request(app)
+            .patch('/contacts/abc')
+            .set('x-access-token', jwt)
+            .send(payload);
+
+        expect(resultado.status).toEqual(400);
+    });
 });
