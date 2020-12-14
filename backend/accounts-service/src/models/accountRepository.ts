@@ -4,19 +4,19 @@ import { DestroyOptions } from 'sequelize/types';
 
 function findAll() {
     return accountModel.findAll<IAccountModel>();
-};
+}
 
 function findById(id: number) {
     return accountModel.findByPk<IAccountModel>(id);
-};
+}
 
 function findByEmail(emailFilter: string) {
     return accountModel.findOne<IAccountModel>({ where: { email: emailFilter } });
-};
+}
 
 function add(account: IAccount) {
     return accountModel.create(account);
-};
+}
 
 async function set(id: number, account: IAccount) {
     const originalAccount = await accountModel.findByPk<IAccountModel>(id);
@@ -34,7 +34,7 @@ async function set(id: number, account: IAccount) {
         return originalAccount;
     }
     return null;
-};
+}
 
 function remove(id: number) {
     return accountModel.destroy({ where: { id: id } } as DestroyOptions<IAccount>);

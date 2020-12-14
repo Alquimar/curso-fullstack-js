@@ -95,7 +95,7 @@ describe('Testando rotas do accounts', () => {
         expect(resultado.status).toEqual(400);
     });
 
-    it('PATCH /accounts/:id - Deve retornar statusCode 404', async () => {
+    it('PATCH /accounts/:id - Deve retornar statusCode 403', async () => {
         const payload = {
             name: 'Alquimar Almeida'
         };
@@ -105,7 +105,7 @@ describe('Testando rotas do accounts', () => {
             .send(payload)
             .set('x-access-token', jwt);
         
-        expect(resultado.status).toEqual(404);
+        expect(resultado.status).toEqual(403);
     });
 
     it('GET /accounts/:id - Deve retornar statusCode 200', async () => {
@@ -117,12 +117,12 @@ describe('Testando rotas do accounts', () => {
         expect(resultado.body.id).toBe(testId);
     });
 
-    it('GET /accounts/:id - Deve retornar statusCode 404', async () => {
+    it('GET /accounts/:id - Deve retornar statusCode 403', async () => {
         const resultado = await request(app)
             .get('/accounts/-1')
             .set('x-access-token', jwt);
         
-        expect(resultado.status).toEqual(404);
+        expect(resultado.status).toEqual(403);
     });
 
     it('GET /accounts/:id - Deve retornar statusCode 400', async () => {
@@ -131,5 +131,21 @@ describe('Testando rotas do accounts', () => {
             .set('x-access-token', jwt);
         
         expect(resultado.status).toEqual(400);
+    });
+
+    it('DELETE /accounts/:id - Deve retornar statusCode 200', async () => {
+        const resultado = await request(app)
+            .delete('/accounts/' + testId)
+            .set('x-access-token', jwt);
+        
+        expect(resultado.status).toEqual(200);
+    });
+
+    it('DELETE /accounts/:id - Deve retornar statusCode 403', async () => {
+        const resultado = await request(app)
+            .delete('/accounts/-1')
+            .set('x-access-token', jwt);
+        
+        expect(resultado.status).toEqual(403);
     });
 });
