@@ -1,14 +1,36 @@
 import React from 'react';
 import { Button, Form, Container, Row, Col } from 'react-bootstrap';
-import { BoxForm, BoxContent } from './styles';
+import { BoxForm, BoxContent } from '../../../shared/styles';
 import Logo from '../../../assets/logo.png'
-
-import { Link } from 'react-router-dom';
+import AccountsService from '../../../services/accounts';
+import { login } from '../../../services/auth';
+import { Link, withRouter } from 'react-router-dom';
 
 class SignIn extends React.Component {
+    state = {
+        email: '',
+        password: '',
+        error: ''
+    };
 
     handleSignIn = async (event) => {
         event.preventDefault();
+
+        const { email, password, error } = this.state;
+
+        if (!email || !password) {
+            this.setState({ error: 'Informe todos os campos para acessar' });
+        } else {
+            try {
+                const service = new AccountsService();
+                const response = await service.login(email, password);
+                login(response.data.token);
+                this.props.history.push("/");
+            } catch (error) {
+                console.log(error);
+                this.setState({ error: 'Ocorreu um erro durante a tentativa de login.' });
+            }
+        }
     }
 
     render() {
@@ -28,6 +50,7 @@ class SignIn extends React.Component {
                                     <Form.Control
                                         type="email"
                                         placeholder="Digite seu e-mail"
+                                        onChange={e => this.setState({ email: e.target.value })}
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="passwordGroup">
@@ -35,6 +58,7 @@ class SignIn extends React.Component {
                                     <Form.Control
                                         type="password"
                                         placeholder="Digite sua senha"
+                                        onChange={e => this.setState({ password: e.target.value })}
                                     />
                                 </Form.Group>
                                 <Button block variant="secondary" type="submit">
@@ -53,4 +77,4 @@ class SignIn extends React.Component {
     }
 }
 
-export default SignIn;
+export default withRouter(SignIn);
