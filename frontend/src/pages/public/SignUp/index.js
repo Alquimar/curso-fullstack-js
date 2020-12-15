@@ -8,7 +8,7 @@ import {
     Alert
 } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
-import { BoxForm, BoxContent } from './styles';
+import { BoxForm, BoxContent } from '../../../shared/styles';
 import api from '../../../services/api';
 import Logo from '../../../assets/logo.png'
 
