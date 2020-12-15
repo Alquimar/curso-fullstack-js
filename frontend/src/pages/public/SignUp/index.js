@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { BoxForm, BoxContent } from '../../../shared/styles';
-import api from '../../../services/api';
+import AccountsService from '../../../services/accounts';
 import Logo from '../../../assets/logo.png'
 
 class SignUp extends React.Component {
@@ -30,9 +30,8 @@ class SignUp extends React.Component {
             this.setState({ error: 'Informe todos os campos para se cadastrar' });
         } else {
             try {
-                await api.post('accounts', {
-                    name, email, password, domain
-                });
+                const service = new AccountsService();
+                await service.signup({ name, email, password, domain });
                 this.props.history.push("/signin");
             } catch (error) {
                 console.log(error);
