@@ -7,8 +7,9 @@ import {
     Col,
     Alert
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { BoxForm, BoxContent } from './styles';
+import api from '../../../services/api';
 import Logo from '../../../assets/logo.png'
 
 class SignUp extends React.Component {
@@ -23,9 +24,21 @@ class SignUp extends React.Component {
 
     handleSignUp = async (event) => {
         event.preventDefault();
-        alert("Teste");
         const { name, email, password, domain } = this.state;
 
+        if (!name || !email || !password || !domain) {
+            this.setState({ error: 'Informe todos os campos para se cadastrar' });
+        } else {
+            try {
+                await api.post('accounts', {
+                    name, email, password, domain
+                });
+                this.props.history.push("/signin");
+            } catch (error) {
+                console.log(error);
+                this.setState({ error: 'Ocorreu um erro durante a criação da conta.' });
+            }
+        }
     }
 
     renderError = () => {
@@ -47,7 +60,7 @@ class SignUp extends React.Component {
                         <BoxForm>
                             <h2>Cadastro</h2>
                             <p>Informe todos os campos para realizar o cadastro.</p>
-                            <Form>
+                            <Form onSubmit={this.handleSignUp}>
                                 {this.state.error && this.renderError()}
                                 <Form.Group controlId="nomeGroup">
                                     <Form.Label>Nome:</Form.Label>
@@ -81,10 +94,10 @@ class SignUp extends React.Component {
                                         onChange={e => this.setState({ password: e.target.value })}
                                     />
                                 </Form.Group>
+                                <Button block variant="primary" type="submit">
+                                    Realizar cadastro
+                                </Button>
                             </Form>
-                            <Button block variant="primary">
-                                Realizar cadastro
-                            </Button>
                         </BoxForm>
                         <BoxContent>
                             <Link className="button" to="/signin">Voltar para o login</Link>
@@ -96,4 +109,4 @@ class SignUp extends React.Component {
     }
 }
 
-export default SignUp;
+export default withRouter(SignUp);
