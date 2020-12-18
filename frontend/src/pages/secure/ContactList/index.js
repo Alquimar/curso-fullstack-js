@@ -57,8 +57,10 @@ class Contacts extends React.Component {
 
         const result = await service.getAll();
 
+        console.log(result.data);
+
         this.setState({
-            isLoading: true,
+            isLoading: false,
             contacts: result,
         });
     }
