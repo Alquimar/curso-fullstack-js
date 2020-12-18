@@ -14,6 +14,8 @@ class ContactsService {
 
     async getOne(contactId) {
         const result = await this.api.get(`contacts/${contactId}`);
+
+        return result.data;
     }
 
     async add(contactModel) {
