@@ -4,9 +4,11 @@ import repository from '../models/accountRepository';
 import auth from '../auth';
 import controllerCommons from 'ms-commons/api/controllers/controller';
 import { Token } from 'ms-commons/api/auth';
+import { AccountStatus } from '../models/accountStatus';
 
 async function getAccounts(req: Request, res: Response, next: any) {
-    const accounts: IAccount[] = await repository.findAll();
+    const includeRemoved = req.query.includeRemoved == 'true';
+    const accounts: IAccount[] = await repository.findAll(includeRemoved);
     res.json(accounts.map(item => {
         item.password = '';
         return item;
@@ -19,7 +21,7 @@ async function getAccount(req: Request, res: Response, next: any) {
         if (!id) return res.status(400).end();
 
         const token = controllerCommons.getToken(res) as Token;
-        if(id !== token.accountId) return res.status(403).end();
+        if (id !== token.accountId) return res.status(403).end();
 
         const account = await repository.findById(id);
         if (account === null)
@@ -53,7 +55,7 @@ async function setAccount(req: Request, res: Response, next: any) {
         if (!accountId) return res.status(400).end();
 
         const token = controllerCommons.getToken(res) as Token;
-        if(accountId !== token.accountId) return res.status(403).end();
+        if (accountId !== token.accountId) return res.status(403).end();
 
         const accountParams = req.body as IAccount;
 
@@ -100,10 +102,19 @@ async function deleteAccount(req: Request, res: Response, next: any) {
         if (!accountId) return res.status(400).end();
 
         const token = controllerCommons.getToken(res) as Token;
-        if(accountId !== token.accountId) return res.status(403).end();
+        if (accountId !== token.accountId) return res.status(403).end();
 
-        await repository.remove(accountId);
-        res.status(200).end();
+        if (req.query.force === 'true') {
+            await repository.remove(accountId);
+            res.status(200).end();
+        }
+        else {
+            const accountParams = {
+                status: AccountStatus.REMOVED
+            } as IAccount;
+            const updatedAccount = await repository.set(accountId, accountParams);
+            res.json(updatedAccount);
+        }
     } catch (error) {
         console.log(`deleteAccount: ${error}`);
         res.status(400).end();

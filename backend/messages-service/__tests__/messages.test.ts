@@ -4,6 +4,7 @@ import accountsApp from '../../accounts-service/src/app';
 import { IMessage } from '../src/models/message';
 import repository from '../src/models/messageRepository';
 import { send } from 'process';
+import { MessageStatus } from '../src/models/messageStatus';
 
 const testEmail = 'jest@accounts.com';
 const testPassword = '123456';
@@ -51,7 +52,7 @@ afterAll(async () => {
     console.log(`removeResult: ${removeResult}:${removeResult2}`);
 
     const deleteResponse = await request(accountsApp)
-        .delete('/accounts/' + testAccountId)
+        .delete(`/accounts/${testAccountId}?force=true`)
         .set('x-access-token', jwt);
     console.log(`deleteResponse: ${deleteResponse.status}`);
 
@@ -217,5 +218,30 @@ describe('Testando rotas do messages', () => {
             .send(payload);
 
         expect(resultado.status).toEqual(400);
+    });
+
+    it('DELETE /messages/:id - Deve retornar statusCode 200', async () => {
+        const resultado = await request(app)
+            .delete('/messages/' + testMessageId)
+            .set('x-access-token', jwt);
+        
+        expect(resultado.status).toEqual(200);
+        expect(resultado.body.status).toEqual(MessageStatus.REMOVED);
+    });
+
+    it('DELETE /messages/:id?force=true - Deve retornar statusCode 200', async () => {
+        const resultado = await request(app)
+            .delete(`/messages/${testMessageId}?force=true`)
+            .set('x-access-token', jwt);
+        
+        expect(resultado.status).toEqual(200);
+    });
+
+    it('DELETE /messages/:id - Deve retornar statusCode 403', async () => {
+        const resultado = await request(app)
+            .delete('/messages/-1')
+            .set('x-access-token', jwt);
+        
+        expect(resultado.status).toEqual(403);
     });
 });

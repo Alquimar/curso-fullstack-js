@@ -9,5 +9,6 @@ router.get('/contacts/:id', middlewareCommons.validateAuth, controller.getContac
 router.get('/contacts/', middlewareCommons.validateAuth, controller.getContacts);
 router.post('/contacts/', middlewareCommons.validateAuth, validateContactSchema, controller.addContact);
 router.patch('/contacts/:id', middlewareCommons.validateAuth, validateUpdateContactSchema, controller.setContact);
+router.delete('/contacts/:id', middlewareCommons.validateAuth, controller.deleteContact);
 
 export default router;

@@ -1,9 +1,13 @@
 import accountModel, { IAccountModel } from './accountModel';
 import { IAccount } from './account';
 import { DestroyOptions } from 'sequelize/types';
+import { AccountStatus } from './accountStatus';
 
-function findAll() {
-    return accountModel.findAll<IAccountModel>();
+function findAll(includeRemoved: boolean) {
+    if(includeRemoved)
+        return accountModel.findAll<IAccountModel>();
+    else
+        return accountModel.findAll<IAccountModel>({where: {status: [AccountStatus.ACTIVE, AccountStatus.CREATED, AccountStatus.SUSPENDED]}});
 }
 
 function findById(id: number) {

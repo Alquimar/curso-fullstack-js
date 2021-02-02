@@ -9,5 +9,6 @@ router.get('/messages/:id', middlewareCommons.validateAuth, controller.getMessag
 router.get('/messages/', middlewareCommons.validateAuth, controller.getMessages);
 router.post('/messages/', middlewareCommons.validateAuth, validateMessageSchema, controller.addMessage);
 router.patch('/messages/:id', middlewareCommons.validateAuth, validateUpdateMessageSchema, controller.setMessage);
+router.delete('/messages/:id', middlewareCommons.validateAuth, controller.deleteMessage);
 
 export default router;
